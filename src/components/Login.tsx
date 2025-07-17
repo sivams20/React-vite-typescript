@@ -1,62 +1,73 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { Box, Button, TextField, Typography, Paper } from '@mui/material';
 import type { Login } from '../types/login';
+
 
 const validationSchema = Yup.object({
   email: Yup.string().email('Invalid email format').required('Required'),
-  password: Yup.string()
-    .min(6, 'Password must be at least 6 characters')
-    .required('Required'),
+  password: Yup.string().min(6, 'Minimum 6 characters').required('Required'),
 });
 
-const Login: React.FC = () => {
+const LoginForm: React.FC = () => {
   const initialValues: Login = {
     email: '',
     password: '',
   };
 
-  const onSubmit = (values: Login) => {
-    console.log('Login submitted:', values);
-  };
-
   const formik = useFormik({
     initialValues,
     validationSchema,
-    onSubmit,
+    onSubmit: (values) => {
+      console.log('Form submitted:', values);
+    },
   });
 
   return (
-    <form onSubmit={formik.handleSubmit} style={{ width: '300px', margin: '0 auto' }}>
-      <h2>Login</h2>
+    <Paper elevation={3} sx={{ p: 10, maxWidth: 400, mx: 'auto', mt: 8 }}>
+      <Typography variant="h5" align="center" gutterBottom>
+        Login
+      </Typography>
 
-      <div style={{ marginBottom: '1rem' }}>
-        <label htmlFor="email">Email</label><br />
-        <input
+      <form onSubmit={formik.handleSubmit} noValidate>
+        <TextField
+          fullWidth
           id="email"
-          type="email"
-          {...formik.getFieldProps('email')}
+          name="email"
+          label="Email"
+          variant="outlined"
+          margin="normal"
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.email && Boolean(formik.errors.email)}
+          helperText={formik.touched.email && formik.errors.email}
         />
-        {formik.touched.email && formik.errors.email && (
-          <div style={{ color: 'red' }}>{formik.errors.email}</div>
-        )}
-      </div>
 
-      <div style={{ marginBottom: '1rem' }}>
-        <label htmlFor="password">Password</label><br />
-        <input
+        <TextField
+          fullWidth
           id="password"
+          name="password"
+          label="Password"
           type="password"
-          {...formik.getFieldProps('password')}
+          variant="outlined"
+          margin="normal"
+          value={formik.values.password}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.password && Boolean(formik.errors.password)}
+          helperText={formik.touched.password && formik.errors.password}
         />
-        {formik.touched.password && formik.errors.password && (
-          <div style={{ color: 'red' }}>{formik.errors.password}</div>
-        )}
-      </div>
 
-      <button type="submit">Login</button>
-    </form>
+        <Box mt={2}>
+          <Button color="primary" variant="contained" fullWidth type="submit">
+            Login
+          </Button>
+        </Box>
+      </form>
+    </Paper>
   );
 };
 
-export default Login;
+export default LoginForm;
