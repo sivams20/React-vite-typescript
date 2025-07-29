@@ -1,8 +1,11 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Box, Button, TextField, Typography, Paper } from '@mui/material';
+import { Box, Button, TextField, Typography, Paper, Divider, IconButton } from '@mui/material';
 import type { Login } from '../types/login';
+import { GoogleLogin } from '@react-oauth/google';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import TwitterIcon from '@mui/icons-material/Twitter';
 
 
 const validationSchema = Yup.object({
@@ -23,6 +26,14 @@ const LoginForm: React.FC = () => {
       console.log('Form submitted:', values);
     },
   });
+
+  const handleGoogleLoginSuccess = (response: any) => {
+    console.log('Google success:', response);
+  };
+
+  const handleGoogleLoginError = () => {
+    console.error('Google login failed');
+  };
 
   return (
     <Paper elevation={3} sx={{ p: 10, maxWidth: 400, mx: 'auto', mt: 8 }}>
@@ -64,6 +75,20 @@ const LoginForm: React.FC = () => {
           <Button color="primary" variant="contained" fullWidth type="submit">
             Login
           </Button>
+        </Box>
+        <Divider sx={{ my: 3 }}>or</Divider>
+        <Box display="flex" justifyContent="center" gap={2}>
+          <GoogleLogin
+            onSuccess={handleGoogleLoginSuccess}
+            onError={handleGoogleLoginError}
+            useOneTap={false}
+          />
+          <IconButton aria-label="facebook login" color="primary" disabled>
+            <FacebookIcon />
+          </IconButton>
+          <IconButton aria-label="twitter login" color="primary" disabled>
+            <TwitterIcon />
+          </IconButton>
         </Box>
       </form>
     </Paper>
